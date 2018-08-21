@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv='Content-Type' content='text/html;charset=UTF-8'/>
+    <!-- <script src="/sap/public/bc/ui5_ui5/1/resources/sap-ui-cachebuster/sap-ui-core.js" -->
+     
+     <!-- <script src="https://nwgwdev.transport.nsw.gov.au//sap/public/bc/ui5_ui5/1/resources/sap-ui-cachebuster/sap-ui-core.js" -->
+ 
+  <!-- included  for 75254  testing with latest UI library
+       -->
+   <script src="/sap/public/bc/ui5_ui5/1/resources/sap-ui-cachebuster/sap-ui-core.js"
+
+         id="sap-ui-bootstrap"
+        data-sap-ui-libs="sap.m,sap.ui.layout,sap.ui.commons,sap.ui.unified,sap.ui.table"
+        data-sap-ui-theme="sap_bluecrystal"
+        data-sap-ui-resourceroots='{
+      		"fault_mgmt": "./"
+      }'>
+    </script>
+    <script type="text/javascript">
+   // var eqpFMSFormChngdFlg = false; //Defect #29409  NARASIMB 06072016
+    </script>
+    <!-- only load the mobile lib "sap.m" and the "sap_bluecrystal" theme -->
+
+    <script>
+    new sap.ui.core.ComponentContainer({
+      name : "fault_mgmt"
+    }).placeAt("content");
+    
+
+
+    </script>
+    <script src="models/faultmgmt.model.js"></script>
+
+  </head>
+  <body class="sapUiBody" role="application">
+    <div id="content"></div>
+  </body>
+</html>
