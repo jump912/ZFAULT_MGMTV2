@@ -12,10 +12,7 @@ sap.ui.core.UIComponent.extend("fault_mgmt.Component", {
 		}
 		
 	},
-//	init: function(){
-//		var actData = {}; 
-//			
-//	},
+	
 	createContent : function() {
 		/*if(sap.ushell) // Defect 11832 NARASIMB 08062016 removed warning
 			sap.ushell.Container.setDirtyFlag(true);*/

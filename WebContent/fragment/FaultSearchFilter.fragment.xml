@@ -1,0 +1,289 @@
+<core:FragmentDefinition
+	xmlns:m="sap.m"
+	xmlns:core="sap.ui.core">
+	<m:ResponsivePopover class="sapUiPopupWithPadding" placement="Bottom" showHeader="false">
+		<m:content>
+			<m:VBox width="100%" alignContent="Center" alignItems="Center">
+				<m:items>
+					<m:HBox width="100%" alignItems="Center" id="IDHFaultaultNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzqmnum}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzqmnum" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxTripNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZztripNum}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Car">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZztripNum" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxDailyIncidentNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZzincdailyNum}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZzincdailyNum" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxSetNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZzsetNum}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZzsetNum" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxCar">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzcarid}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzcarid" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxAsset">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzeqktx}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzeqktx" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPositionNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzposition}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzposition" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <!--  
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPositionDesc">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZzpositionDesc}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZzpositionDesc" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   -->
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxSymptomCode">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzktxtcd}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzktxtcd" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <!--  
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxSymptomDesc">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzktxtgr}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzktxtgr" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   -->
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPriorityCode">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzpriok}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Car">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzpriok" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <!--  
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPriorityDesc">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZzpriorityDesc}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Car">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZzpriorityDesc" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   -->
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPimaryFaultNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>ZzprimeFauktNum}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="ZzprimeFauktNum" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   <m:HBox width="100%" alignItems="Center" id="IDHBoxWorkOrderNumber">
+                          <m:items>
+                                 <m:VBox width="35%" direction="Column" alignItems="End"
+                                       alignContent="Center" class="sapUiSmallMarginEnd">
+                                       <m:items>
+                                              <m:Label text="{i18n>Zzaufnr}" width="100%"
+                                                     textAlign="Right" />
+                                       </m:items>
+                                 </m:VBox>
+
+                                 <m:VBox width="70%" direction="Column">
+                                       <m:items>
+                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                                     id="Zzaufnr" liveChange="onLiveSearch" showSearchButton="false"/>
+                                       </m:items>
+                                 </m:VBox>
+                          </m:items>
+                   </m:HBox>
+                   
+                   
+                   
+                   
+                   
+                   
+				</m:items>
+			</m:VBox>
+		</m:content>
+    </m:ResponsivePopover>	
+</core:FragmentDefinition>

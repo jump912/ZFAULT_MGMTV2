@@ -1,4 +1,5 @@
 var faultServiceUrl = "/sap/opu/odata/sap/ZGWP_PM_FAULT_MANAGE_SRV";
+var commonUtilUrl = "/sap/opu/odata/sap/ZGWP_PM_COMMON_UTILITY_SRV"; //++ CR015 SIMS20180815 (SY)
 //var faultServiceUrl = "https://nwgwdev.transport.nsw.gov.au/sap/opu/odata/sap/ZGWP_PM_FAULT_MANAGE_SRV";
 var eqpFMSFormChngdFlg = false; //Defect #29409  NARASIMB 06072016
 // Begin of insert KADAMA20160923 for Defect 14867
@@ -286,6 +287,7 @@ function  getFaultLongText(notifNum){
 	);
 	 	return longText;
 };	
+
 function setOpenNotificationData(car,notifTable,page,controller,notifNum){
 	
 	var eModel= new sap.ui.model.json.JSONModel();
@@ -321,28 +323,37 @@ contentType: "application/json; charset=utf-8",
         	  
         	  //** Eric - Begin add - CR015
         	  // Set the title to our custom header
-        	  page.getCustomHeader().getContentMiddle()[0].setText(data.d.results.length+" open faults found for cars - "+ car);
+        	  page.getCustomHeader().getContentMiddle()[0].setText(data.d.results.length+" open faults found for cars - "+ car);  
         	  //** Eric - End add - CR015
         	  
-        	  controller.openDialog();
+        	  controller.openDialog();       	  
         	}
-        	  else if(data.d.results.length==0)
-        	  {
-        		  jQuery.sap.require("sap.m.MessageBox");
-        		  //car = car.replace("|"," ");
-        		  car = car.replace(/\|/g,',');
-        		  sap.m.MessageBox.show("No open faults found for cars - "+car,{
-        			  icon: sap.m.MessageBox.Icon.INFORMATION, 
-        			  title: "Fault Information", 
-        			  actions: sap.m.MessageBox.Action.OK, 
-        			  onClose: function() {},
-        			  styleClass: "faultMsgBox"
-        			  }
-        		  );
-        	  }
+//** Eric - Begin delete - CR015 
+//** We still want to see the popup for closed faults search function even though there is no open faults        	  
+//        	  else if(data.d.results.length==0)
+//        	  {
+//        		  jQuery.sap.require("sap.m.MessageBox");
+//        		  //car = car.replace("|"," ");
+//        		  car = car.replace(/\|/g,',');
+//        		  sap.m.MessageBox.show("No open faults found for cars - "+car,{
+//        			  icon: sap.m.MessageBox.Icon.INFORMATION, 
+//        			  title: "Fault Information", 
+//        			  actions: sap.m.MessageBox.Action.OK, 
+//        			  onClose: function() {},
+//        			  styleClass: "faultMsgBox"
+//        			  }
+//        		  );
+//        	  }
+//** Eric - End delete - CR015        	  
         	  else
         		  {
         		  page.setTitle(data.d.results.length+" open fault found for car "+car);
+        		  
+        		  //** Eric - Begin add - CR015
+            	  // Set the title to our custom header
+            	  page.getCustomHeader().getContentMiddle()[0].setText(data.d.results.length+" open fault found for car "+car);  
+            	  //** Eric - End add - CR015
+            	  
         		  controller.openDialog();
         		  }
         	  
@@ -1146,6 +1157,7 @@ var length = controller.getView().carInput.getTokens().length;
 oModel.create('/ETS_FAULT_CREATE_UPD',postData,{
       success : function(data, response){
    	   	  modal.busyIndicator.close();
+   	   	  controller.setUserLastEntry();  //++ CR015 SIMS20180815 (SY)
              if((flag)&&(checkCarCount))
        	  {
        	  controller.handleMultipleResponse(data,length);
@@ -1738,20 +1750,180 @@ function  getTechDetailGrp(asset,car,catalog,callback, callbackObject){
 	};
 
 //End of changes
+
+//** Eric - Begin add - CR015
+	function getClosedFaultInterval(oController) {
+		var iIntervalDays;
+		var oModel = new sap.ui.model.odata.ODataModel(faultServiceUrl, true);
+		oModel.read("/ETS_CLOSEDFAULT_INTERVAL", {
+		  success: function(data, response) {
+			  iIntervalDays = data.results[0].Interval;
+			  
+			  var oTodayDate = new Date();
+			  var oFromDate = new Date();
+			  oFromDate.setDate(oFromDate.getDate() - iIntervalDays); 
+			  var oData = {
+					  FromDate: oFromDate,
+					  ToDate: oTodayDate
+			  };
+			  var oClosedFaultSearchModel = new sap.ui.model.json.JSONModel(oData);
+			  oController.getView().dialogNotification.setModel(oClosedFaultSearchModel, "ClosedFaultSearchModel");
+		  },
+		  error: function(oError) {
+			  // Unable to read parameter or not maintained, set to today only
+			  var oData = {
+					  FromDate: new Date(),
+					  ToDate: new Date()
+			  };
+			  var oClosedFaultSearchModel = new sap.ui.model.json.JSONModel(oData);
+			  oController.getView().dialogNotification.setModel(oClosedFaultSearchModel, "ClosedFaultSearchModel");	
+		  }
+	  });   	
+	};
+	
+	function getClosedFaultModel(oController, oClosedFaultDateFrom, oClosedFaultDateTo, sCarid, sNotifNum, fCallback) {
+		var oClosedFaultModel = oController.closedFaultModel;
+		if(!oClosedFaultModel){
+			oClosedFaultModel = new sap.ui.model.odata.ODataModel(faultServiceUrl, true);
+		}
+		
+		if(!this.busyIndicator){
+			this.busyIndicator = new sap.m.BusyDialog() 
+		}
+		var oModal = this
+		oModal.busyIndicator.open();
+		
+		var aFilters = [
+			new sap.ui.model.Filter({
+				path: "IvCar",
+				operator: sap.ui.model.FilterOperator.EQ,
+				value1: sCarid
+			}),
+			new sap.ui.model.Filter({ 
+				path: "Zzqmdat",
+				operator: sap.ui.model.FilterOperator.GE,
+				value1: oClosedFaultDateFrom.toISOString().replace(/\.[0-9Z]{3,4}/, '')		// Take the ISO string but strip away the millisecond part
+			}),
+			new sap.ui.model.Filter({
+				path: "Zzqmdat",
+				operator: sap.ui.model.FilterOperator.LE,
+				value1: oClosedFaultDateTo.toISOString().replace(/\.[0-9Z]{3,4}/, '')		// Take the ISO string but strip away the millisecond part
+			})
+		];
+		oClosedFaultModel.read("/ETS_CLOSED_NOTIF", {
+			filters: aFilters,
+			success: function(oData, response) {
+				fCallback.call(oController, oData);
+				oModal.busyIndicator.close();
+			},
+			error: function(oError) {
+				oModal.busyIndicator.close();
+			}
+		});
+	}
+//** Eric - End add - CR015
 	
 //BEGIN INSERT CR015 SIMS20180815 (SY)
-  function setInitModel(callback, callbackObject) {
-//	  sap.ui.core.BusyIndicator.show();
-//	  var that = this;
-	  var searchString = "*";  //select all set number
-	  var mModel = new sap.ui.model.odata.ODataModel(faultServiceUrl, true);
-	  mModel.read("/ETS_FLAG2?$filter=IvSet eq '"+searchString+"'&$expand=NAV_SET", {
-		  success: function(oData, response) {
-			  var data={};
-			  data.d = oData;
-			  callback.call(callbackObject,data);			  
-		  }
-	  });
-//	  sap.ui.core.BusyIndicator.hide();	  
-  };
+	function readUserLastEntry(callback, callbackObject) {
+		if(!this.busyIndicator) {
+			this.busyIndicator = new sap.m.BusyDialog()
+		}
+		
+		var modal = this;
+		modal.busyIndicator.open();
+		
+		var mModel = new sap.ui.model.odata.ODataModel(commonUtilUrl, true);
+		mModel.read("/ETS_USER_LAST_ENTRY(ApplicationID='ZFAULT_MGMTV2',RicefID='ENH-8230',IsMobile=false)/NAV_TO_LENTRY", {
+			success : function(oData, response) {
+				var data = {};
+				data.d = oData;
+				modal.busyIndicator.close();
+				callback.call(callbackObject,data);
+			},
+			error : function(oError) {
+				modal.busyIndicator.close();
+			}
+		})
+	};
+	
+	function getLocAndRptPhaseList(callback, callbackObject) {
+		if(!this.busyIndicator) {
+			this.busyIndicator = new sap.m.BusyDialog()
+		}
+		
+		var modal = this;
+		modal.busyIndicator.open();
+		
+		var mModel = new sap.ui.model.odata.ODataModel(faultServiceUrl, true);
+		mModel.read("ETS_FLAG?$filter=IvLocation eq 'X' and IvReportphase eq 'X'&$expand=NAV_LOCATION,NAV_REPORTPHASE", {
+			success : function(oData, response) {
+				var data = {};
+				data.d = oData;
+				modal.busyIndicator.close();
+				callback.call(callbackObject,data);
+			},
+			error : function(oError) {
+				modal.busyIndicator.close();
+			}
+		})
+		
+	};
+	
+	function saveUserLastEntry(data, controller) {
+		if(!this.busyIndicator) {
+			this.busyIndicator = new sap.m.BusyDialog()
+		}
+
+		var modal = this;
+		modal.busyIndicator.open();
+		
+		var mModel = new sap.ui.model.odata.ODataModel(commonUtilUrl, true);		
+		mModel.refreshSecurityToken(function(a, b) {
+			mModel.oHeaders = {
+				"x-csrf-token" : b.headers["x-csrf-token"],
+				"Content-Type" : "application/json; charset=utf-8"
+			};
+			mModel.create('/ETS_USER_LAST_ENTRY', data, {
+				success : function(data, response) {
+					modal.busyIndicator.close();
+				},
+				error : function(error) {
+					modal.busyIndicator.close();
+				}
+			});
+		}, function(a) {
+			successFaultCallBack.apply(context, [ a, true ]);
+		}, true);		
+	};
+	
+// To get the Car and set Number
+	function  getCarAndSetList(sSetNum, sCarNum, callback, callbackObject){
+		if(!this.busyIndicator){		    
+		    this.busyIndicator = new sap.m.BusyDialog()
+		}
+
+	    var modal = this;
+	    modal.busyIndicator.open();
+	    
+	    if(sSetNum === ""){
+	    	sSetNum = "*"
+	    }
+	    
+	    if(sCarNum === ""){
+	    	sCarNum = "*"
+	    }
+	    
+		 var mModel = new sap.ui.model.odata.ODataModel(faultServiceUrl, true);
+		 mModel.read("/ETS_FLAG2?$filter=IvSet eq '"+sSetNum+"' and IvCar eq '"+sCarNum+"' &$expand=NAV_SET,NAV_CAR",{
+	         success: function (oData, response) {
+	        	 var data={};
+	        	 data.d = oData;
+	        	 modal.busyIndicator.close();
+	        	 callback.call(callbackObject,data);       	 
+	       	  },
+	           error: function (oError) {
+	           	 modal.busyIndicator.close();
+	           }		 
+		 });
+	};	
 //END INSERT CR015 SIMS20180815 (SY)	

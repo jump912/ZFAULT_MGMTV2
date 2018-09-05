@@ -49,24 +49,53 @@ sap.ui.jsview("fault_mgmt.createNotification", {
             formatter : function(date,time,incident){
              if(date)
              {
-              var r = /\d+/;
-              var formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");
-              //var formattedDate = date;
+//** Eric - Begin add - CR015
+            	 try {
+            		 var r = /\d+/;
+                     var formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");            		 
+            	 } 
+            	 catch(err) {
+            		 // date returned by using oData.read() will be javascript date object and will fail the above formatting
+            		 var dateFormatter = sap.ui.core.format.DateFormat.getDateInstance({pattern : "MMM dd YYYY" });   
+            		 var formattedDate = dateFormatter.format(date);
+            	 }
+//** Eric - End add - CR015
+            	
+//** Eric - Begin delete - CR015
+//            	 var r = /\d+/;
+//                 var formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");
+//                 //var formattedDate = date;
+//** Eric - End delete - CR015
              }
              else
              {
               var formattedDate = "";
              }
-             if ((time == "PT00H00M00S") &&(date))
-             {
-              var formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
-             }
-             else if((time) && (time != "PT00H00M00S"))
-             {
-              var formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
-             }
-             else
-             {
+             
+             if ((time == "PT00H00M00S") &&(date)) {
+            	 var formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
+             } else if((time) && (time != "PT00H00M00S")) {
+            	 
+//** Eric - Begin add - CR015  
+            	 try {
+            		 var formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
+            	 } catch(err) {
+            		 if(time.ms !== 0) {
+            			// Time returned by using oData.read() will be in milliseconds
+                		 var tempDate = new Date(time.ms);
+                		 
+                		 // format into 24 hours format local time
+            			 dateFormatter = sap.ui.core.format.DateFormat.getDateInstance({pattern : "HH:mm:ss" });   
+            			 var formattedTime = dateFormatter.format(tempDate);
+            		 } else {
+            			 var formattedTime = "";
+            		 }
+            	 }
+//** Eric - End add - CR015        
+            	 
+//            	 var formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);		// Eric-- CR015
+            	 
+             } else {
               var formattedTime = "";
              }
 
@@ -133,18 +162,51 @@ sap.ui.jsview("fault_mgmt.createNotification", {
             {path :"Zzqmnum"}],
             formatter : function(date,time,fault){
              if(date){
-              var formattedDate;
-              var formattedTime;
-
-              var r = /\d+/;
-              formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");
-              // formattedDate = date;
+            	 var formattedDate;
+                 var formattedTime;
+                 
+//** Eric - Begin add - CR015
+            	 try {
+                     var r = /\d+/;
+                     formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");
+                     // formattedDate = date;           		 
+            	 } catch(err) {
+            		 // date returned by using oData.read() will be javascript date object and will fail the above formatting
+            		 var dateFormatter = sap.ui.core.format.DateFormat.getDateInstance({pattern : "MMM dd YYYY" });   
+            		 var formattedDate = dateFormatter.format(date);
+            	 }
+//** Eric - End add - CR015   
+            	 
+//** Eric - Begin delete - CR015
+//                 var r = /\d+/;
+//                 formattedDate = new Date(Number(date.match(r)[0])).toDateString().split(" ").slice(1).join(" ");
+//                 // formattedDate = date;
+//** Eric - End delete - CR015            	 
              }
              else {
               formattedDate = "";
              }
+             
              if(time){
-              formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
+//** Eric - Begin add - CR015  
+            	 try {
+            		 formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);
+            	 } catch(err) {
+            		 if(time.ms !== 0) {
+            			// Time returned by using oData.read() will be in milliseconds
+                		 var tempDate = new Date(time.ms);
+                		 
+                		// format into 24 hours format local time
+	        			 dateFormatter = sap.ui.core.format.DateFormat.getDateInstance({pattern : "HH:mm:ss" });   
+	        			 var formattedTime = dateFormatter.format(tempDate);
+            		 } else {
+            			 var formattedTime = "";
+            		 }  		 
+            	 }
+//** Eric - End add - CR015            	 
+            	 
+//              formattedTime = time.slice(2,4) + ":" + time.slice(5,7) + ":" + time.slice(8,10);	// Eric-- CR015
+              
               /*   // 1- Convert to seconds:
               var seconds = time.ms / 1000;
               // 2- Extract hours:
@@ -220,7 +282,7 @@ sap.ui.jsview("fault_mgmt.createNotification", {
      }
     }},
     layoutData : new sap.m.FlexItemData({
-    }),
+    }), 
     valueHelpOnly : true,
     showValueHelp: true,
     valueHelpRequest : function(evt) {
@@ -259,7 +321,7 @@ sap.ui.jsview("fault_mgmt.createNotification", {
     else if(symCodeDesc)
     {
      return symCodeDesc;
-    }
+    } 
     else if(symGpDesc)
     {
      return symGpDesc;
@@ -267,7 +329,7 @@ sap.ui.jsview("fault_mgmt.createNotification", {
    }}
   });
   var oPriority = new sap.m.Text({text:{
-   parts :[{path : "Zzpriok"} , {path : "ZzpriorityDesc"}],
+   parts :[{path : "Zzpriok"} , {path : "ZzpriorityDesc"}], 
 
    formatter : function(priorityCode,priorityDesc){
     if(priorityCode&&priorityDesc)
@@ -355,28 +417,89 @@ sap.ui.jsview("fault_mgmt.createNotification", {
 
   //** Eric - Begin add - CR015  
   var oCustomTitle = new sap.m.Title({
-	  text: "Title"
+	  text: "Title" // Stub text
   });
   
   var oCustomTitleBar = new sap.m.Bar({
 	  contentLeft: [
-		  new sap.m.Label({text: "Open Faults"}),
+		  new sap.m.Label({
+			  text: "{i18n>toggleOpenFaults}"
+		  }),
 		  new sap.m.Switch({
+			  id: "FaultSwitch",
 			  customTextOn: " ",
 			  customTextOff: " ",
 			  change: function(evt) {
 				  oController.onFaultSwitchFlipped(evt);
 			  }
 		  }),
-		  new sap.m.Label({text: "Closed Faults"}),
+		  new sap.m.Label({
+			  text: "{i18n>toggleClosedFaults}"
+		  }),
 	  ],
 	  contentMiddle: [oCustomTitle]
   });
-  
-  var oSubHeader = new sap.m.Toolbar({
-	  content: new sap.m.Label({
-		  text: "This is a sub header"
-	  }),
+   
+  var fromDatePicker = new sap.m.DatePicker({
+		id: "ClosedFaultDateFrom",
+		width: "auto",
+		dateValue: "{ClosedFaultSearchModel>/FromDate}",
+		displayFormat: "dd/MM/YYYY",
+		valueFormat: "YYYY-MM-dd",
+		required: true,
+		maxDate: new Date(),
+		change: function(evt) {
+			oController.validateClosedFaultSearchDate(this, evt);
+		}
+	});
+  var toDatePicker = new sap.m.DatePicker({
+		id: "ClosedFaultDateTo",
+		width: "auto",
+		dateValue: "{ClosedFaultSearchModel>/ToDate}",	
+		displayFormat: "dd/MM/YYYY",
+		valueFormat: "YYYY-MM-dd",
+		required: true,
+		change: function(evt) {
+			oController.validateClosedFaultSearchDate(this, evt);
+			
+			if(evt.getParameters().valid){
+				fromDatePicker.setMaxDate(new Date(evt.getParameters().value));
+			}
+		}
+	});
+  var closedFaultSearchButton = new sap.m.Button({
+		id: "ClosedFaultSearchButton",
+		text: "{i18n>buttonClosedFaultSearch}",
+		press: function(evt){
+			oController.onClosedFaultSearch();
+		}
+	});
+  var oSubHeader = new sap.m.Bar({
+	  contentMiddle: [
+		new sap.m.Label({
+			text: "{i18n>labelClosedFaultDateFrom}"
+		}),
+		fromDatePicker,
+		new sap.m.Label({
+			text: "{i18n>labelClosedFaultDateTo}"
+		}),
+		toDatePicker,
+		closedFaultSearchButton
+	  ],
+	  contentRight: [
+		  new sap.m.Button({
+			  icon: "sap-icon://filter",
+			  press: function(evt) {
+				  oController.onFilter(evt);
+			  }
+		  }),
+		  new sap.m.Button({
+			  icon: "sap-icon://sort",
+			  press: function(evt) {
+				  oController.onSort(evt);
+			  }
+		  })
+	  ],
 	  visible: false
   });
   //** Eric - End add - CR015
@@ -416,19 +539,49 @@ sap.ui.jsview("fault_mgmt.createNotification", {
    showValueHelp: false,
    enableMultiLineMode:false,
 //   editable : false,      //-- CR015 SIMS20180815 (SY)
-   editable : true,         //++ CR015 SIMS20180815 (SY)
+// BEGIN INSERT CR015 SIMS20180815 (SY) 
+   editable : true,        
+   showSuggestion : true,
+   liveChange : function(oEvent) {
+	   oController.suggestCarNumber(oEvent);
+   },
+   suggestionItems : {
+	   path : "carNumberModel>/list",
+   	   sorter : { path: "Zzcarid" },
+   	   templateShareable : true,
+   	   template : new sap.ui.core.ListItem({
+   		   key :  "{carNumberModel>Zzcarid}",
+   		   text :  "{carNumberModel>Zzcarid}"
+   	   })
+   },
+// END INSERT CR015 SIMS20180815 (SY)    
    enabled : true,
    valueHelpRequest: function(evt) {
    },
 
    change : function()
    {
-    oController.ValidateChangeCarNum();
-    oController.getCountForFaults();
-   },
+// BEGIN INSERT CR015 SIMS20180815 (SY)
+	   var carNumber = oController.getView().carInput.getValue();
+	   if(carNumber !== "" && carNumber !==null) {
+		   getSetNumber(carNumber,oController.addCarToken,oController);		   
+	   } else {
+ // END INSERT CR015 SIMS20180815 (SY)    
+		   oController.ValidateChangeCarNum();
+	   }  //++ CR015 SIMS20180815 (SY)	   
+	   oController.getCountForFaults();
+   },  
 
    tokenChange:function (evt)
    {
+// BEGIN INSERT CR015 SIMS20180815 (SY)
+	   if(evt.getParameters().type === "added"){
+		   var carNumber = evt.getParameters().token.getKey();
+		   if(carNumber !== "" && carNumber !==null) {
+			   getSetNumber(carNumber,oController.addCarToken,oController);		   
+		   }   
+	   } 
+ // END INSERT CR015 SIMS20180815 (SY)  	   
     oController.getCountForFaults(evt);
     oController.resetSymptomAsset(evt);
     // oController.changeFlag(evt);
@@ -708,7 +861,7 @@ sap.ui.jsview("fault_mgmt.createNotification", {
   },
   value: "{/ZzsetNum}",
   change: function(){
-   oController.changeSetNum();
+   oController.changeSetNum();	  
   },
   enabled : true,
   });
