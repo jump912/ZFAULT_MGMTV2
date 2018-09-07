@@ -957,51 +957,49 @@ sap.ui.controller("fault_mgmt.createNotification", {
   
 //BEGIN INSERT CR015 SIMS20180815 (SY)  
   var set = this.getView().setNum.getValue().toUpperCase();
-  if(this.getView().data("frmCarCtrl") !== 'X'){  //set number is direct input
   
-	  if(set !== null && set !==""){
-		  var setModelList = this.getView().getModel("setNumberModel").oData.list;
-		  
-		  var index = setModelList.map(function(obj){
-			  return obj.Zzsetid
-		  }).indexOf(set);
-		  
-		  if (index === -1){
-			 set = "";
-			 jQuery.sap.require("sap.m.MessageBox");
-			 sap.m.MessageBox.show(
-					 "Set Number does not have Car Numbers", {
-				      icon: sap.m.MessageBox.Icon.ERROR,
-				      title: "ERROR",
-				      actions: [sap.m.MessageBox.Action.OK],
-				      onClose: function(oAction) { 
-				       if(oAction == "OK"){	
-				       } },
-				       styleClass: "faultMsgBox" 
-			    	   }
-			 )	  
-		  }
-	  }
-	  
-	  var oldSet = this.getView().data("setNumber");
-	  
-	  this.getView().setNum.setValue(set);
-	  this.getView().data("setNumber",set);
-	  getCarAndSetList(set, "", this.initCarAndSet, this);
-	  if (oldSet!=="" && oldSet !==null) {
-		  if(set !== oldSet){
-			  this.getView().data("carNumbers",[]);
-			  this.getView().data("carNumbersLen","0");
-			  this.getView().carInput.destroyTokens();
-			  this.getView().symptom.destroyTokens();
-			  this.getView().asset.destroyTokens();	
-			  if((this.getView().data("notifNum"))!==""&&(this.getView().data("notifNum"))!==null){
-				  this.getView().positionPopOver.setValue(""); 
-			  }
-	   }
-		  this.clearActivityCode();
-	  }
-  }
+//  if(set !== null && set !==""){
+//	  var setModelList = this.getView().getModel("setNumberModel").oData.list;
+//	  
+//	  var index = setModelList.map(function(obj){
+//		  return obj.Zzsetid
+//	  }).indexOf(set);
+//	  
+//	  if (index === -1){
+//		 set = "";
+//		 jQuery.sap.require("sap.m.MessageBox");
+//		 sap.m.MessageBox.show(
+//				 "Set Number does not have Car Numbers", {
+//			      icon: sap.m.MessageBox.Icon.ERROR,
+//			      title: "ERROR",
+//			      actions: [sap.m.MessageBox.Action.OK],
+//			      onClose: function(oAction) { 
+//			       if(oAction == "OK"){	
+//			       } },
+//			       styleClass: "faultMsgBox" 
+//		    	   }
+//		 )	  
+//	  }
+//  }
+//  
+//  var oldSet = this.getView().data("setNumber");
+//  
+//  this.getView().setNum.setValue(set);
+//  this.getView().data("setNumber",set);
+//  getCarAndSetList(set, "", this.initCarAndSet, this);
+//  if (oldSet!=="" && oldSet !==null) {
+//	  if(set !== oldSet){
+//		  this.getView().data("carNumbers",[]);
+//		  this.getView().data("carNumbersLen","0");
+//		  this.getView().carInput.destroyTokens();
+//		  this.getView().symptom.destroyTokens();
+//		  this.getView().asset.destroyTokens();	
+//		  if((this.getView().data("notifNum"))!==""&&(this.getView().data("notifNum"))!==null){
+//			  this.getView().positionPopOver.setValue(""); 
+//		  }
+//   }
+//	  this.clearActivityCode();
+//  }
 //END INSERT CR015 SIMS20180815 (SY)
   
   //check if set is maintained in Constant and Parameter table. If matches make objet part mandatory
@@ -1930,75 +1928,53 @@ sap.ui.controller("fault_mgmt.createNotification", {
  //** Eric - Begin add - CR015
  onFaultSwitchFlipped: function(oEvent) {
 	 
-	 this.showHideDialogComponent(oEvent.getParameters().state);
+	 if(!this._oStateObj) {
+		 this._oStateObj = {
+			openState: {
+				data: null,
+				filter: null,
+				sorter: null,
+			},
+			closedState: {
+				data: null,
+				filter: null,
+				sorter: null,
+			}
+		 };
+	 }
+	 
+	 var oTable = this.getView().notifTable;
+	 var oBinding = oTable.getBinding("items");
 	 
 	 // State = true means switched to closed fault 
 	 if(oEvent.getParameters().state) {
-		 // Switch to closed fault data
-		 if(!this.openFaultModel){
-			 this.openFaultModel = this.getView().notifTable.getModel();
-			 this.openFaultData = this.openFaultModel.getData();
-		 }
+		// Switching to closed fault data
 		 
-		 this.getView().notifTable.getModel().setData(this.closedFaultData);
+	 	// Stash open fault data
+	 	this._oStateObj.openState.data = oTable.getModel().getData();
+	 	this._oStateObj.openState.filter = oBinding.aFilters;
+	 	this._oStateObj.openState.sorter = oBinding.aSorters;
+		 
+		// Restore closed fault data
+		oTable.getModel().setData(this._oStateObj.closedState.data);
+		oBinding.filter(this._oStateObj.closedState.filter);
+		oBinding.sort(this._oStateObj.closedState.sorter);
 		 
 	 } else {
-		 // Swtich to open fault data
-		 this.getView().notifTable.getModel().setData(this.openFaultData);
+		// Switching to open fault data
+		 
+		// Stash closed fault data
+		this._oStateObj.closedState.data = oTable.getModel().getData();
+		this._oStateObj.closedState.filter = oBinding.aFilters;
+		this._oStateObj.closedState.sorter = oBinding.aSorters;
+		 
+		// Restore open fault data
+		oTable.getModel().setData(this._oStateObj.openState.data);
+		oBinding.filter(this._oStateObj.openState.filter);
+		oBinding.sort(this._oStateObj.openState.sorter);
 	 }
- },
- 
- _getSortableColumns: function() {
-	/* Use these fields to build the sort dialog 
-	 * Maintain the actualy table field name here */
-	 return [
-		 "Zzqmnum",
-		 "Zzqmdat",
-		 "Zzmzeit",
-		 "ZztripNum",
-		 "ZzincdailyNum",
-		 "ZzincidentDate",
-		 "ZzincidentTime",
-		 "ZzsetNum",
-		 "Zzcarid",
-		 "Zzeqktx",
-		 "Zzposition",
-		 "ZzpositionDesc",
-		 "Zzktxtcd",
-		 "Zzktxtgr",
-		 "Zzpriok",
-		 "ZzpriorityDesc",
-		 "ZzprimeFauktNum",
-		 "Zzaufnr"
-	 ];
- },
- 
- _buildSortModel: function() {
-     var oSortModel = this.getView().getModel("sortModel");
-     if (oSortModel) {
-    	 oSortModel.refresh();
-     } else {
-         //Model for Popover fragment for sort items
-    	 oSortModel = new sap.ui.model.json.JSONModel();
-     };
-     
-     var aData = {};
-     aData.items = [];
-
-     var aSortableColumns = this._getSortableColumns();
-
-     var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
-     for (var i = 0; i < aSortableColumns.length; i++) {
-    	 var oVal = {};
-    	 
-    	 oVal.key = aSortableColumns[i];
-    	 oVal.text = oResourceBundle.getText(aSortableColumns[i]);
-    	 
-    	 aData.items.push(oVal);
-	}
-     
-     oSortModel.setData(aData);
-     return oSortModel;
+	 
+	 this.showHideDialogComponent(oEvent.getParameters().state);
  },
  
  showHideDialogComponent: function(bSwitchState) {
@@ -2022,7 +1998,46 @@ sap.ui.controller("fault_mgmt.createNotification", {
 		 oFaultSwitch.setState(false);
 		 this.showHideDialogComponent(false);
 	 }
+ },
+ 
+ clearFilterAndSort: function() {
+	 var oTable = this.getView().notifTable;
+	 var oBinding = oTable.getBinding("items");
+	 var oModel = oTable.getModel();
+	 var oFilterDialog = this._getClosedFaultFilterDialog();
+	 var oSortDialog = this._getSortDialog();
 	 
+	 if(oBinding) {
+		 oBinding.aSorters = null;
+		 oBinding.aFilters = null;
+		 oModel.refresh(true);
+		 
+		 if(oFilterDialog) {
+			// set a fresh blank model
+			 var oFilterModel = getFilterModel();
+			 oFilterDialog.setModel(oFilterModel, "FilterModel");
+			 oFilterModel.refresh(true);
+		 }
+		 
+		 if(oSortDialog) {
+			 // set a fresh blank model
+			 var oSortModel = getSortModel();
+			 oSortDialog.setModel(oSortModel, "SortModel");
+			 oSortModel.refresh(true);
+		 }
+	 }
+ },
+ 
+ setDefaultSort: function() {
+	 // Default to sort by Notification Date Time
+	 var oTable = this.getView().notifTable;
+	 var oBinding = oTable.getBinding("items");
+
+     var aSorters = [];
+     aSorters.push(new sap.ui.model.Sorter("ZzincidentDate", true));
+     aSorters.push(new sap.ui.model.Sorter("ZzincidentTime", true));
+     
+     oBinding.sort(aSorters);
  },
  
  getClosedFaultModelCallback: function(oData) {
@@ -2031,6 +2046,10 @@ sap.ui.controller("fault_mgmt.createNotification", {
 	 // The original design uses json model and already bound properly
 	 // So we just change the data
 	 this.getView().notifTable.getModel().setData(this.closedFaultData);
+	 
+	 // clear all filter + sort and default to sort by incident date & time
+	 this.clearFilterAndSort();
+	 this.setDefaultSort();
  },
  
  onClosedFaultSearch: function(oEvent) {
@@ -2058,7 +2077,6 @@ sap.ui.controller("fault_mgmt.createNotification", {
 		oDatePickerControl.setValueState(sap.ui.core.ValueState.Success);
 			
 		// Find the search button & enable it
-//		var searchButton = oEvent.getSource().getParent().getContentMiddle().find(x => x.sId==="ClosedFaultSearchButton");
 		this.enableDisableSearchButton();
 		
 		return true;
@@ -2066,7 +2084,6 @@ sap.ui.controller("fault_mgmt.createNotification", {
 		oDatePickerControl.setValueState(sap.ui.core.ValueState.Error);
 		
 		// Find the search button & disable it
-//		var searchButton = oEvent.getSource().getParent().getContentMiddle().find(x => x.sId==="ClosedFaultSearchButton");
 		this.enableDisableSearchButton();
 		
 		return false;
@@ -2145,12 +2162,15 @@ sap.ui.controller("fault_mgmt.createNotification", {
  },
  
  _getClosedFaultFilterDialog: function() {
-	 if (!this._oPopover) {
-         this._oPopover = sap.ui.xmlfragment("fault_mgmt.fragment.FaultSearchFilter", this);
-         this._oPopover.setModel(this.i18nModel, "i18n");
-         this.getView().addDependent(this._Popover);
+	 if (!this._oFilterPopover) {
+         this._oFilterPopover = sap.ui.xmlfragment("fault_mgmt.fragment.FaultSearchFilter", this);
+         
+         var oFilterModel = getFilterModel();
+         this._oFilterPopover.setModel(oFilterModel, "FilterModel");
+         
+         this.getView().addDependent(this._oFilterPopover);
      }
-     return this._oPopover;	 
+     return this._oFilterPopover;	 
  },
  
  _getSortDialog: function() {
@@ -2158,7 +2178,8 @@ sap.ui.controller("fault_mgmt.createNotification", {
      if (!this.sortDialog) {
          // This fragment can be instantiated from a controller as follows:
          this.sortDialog = sap.ui.xmlfragment("fault_mgmt.fragment.FaultSearchSort", this);
-         var oSortModel = this._buildSortModel(); 
+//         var oSortModel = this._buildSortModel(); 
+         var oSortModel = getSortModel(); 
          this.sortDialog.setModel(oSortModel, "sortModel");
          this.getView().addDependent(this.sortDialog);
      }
@@ -3611,11 +3632,12 @@ sap.ui.controller("fault_mgmt.createNotification", {
   getClosedFaultInterval(this);
   
   // Set the i18n
-  var sRootPath = jQuery.sap.getResourcePath("fault_mgmt");
-  this.i18nModel = new sap.ui.model.resource.ResourceModel({
-        bundleUrl : sRootPath+"/i18n/i18n.properties"
-  });
-  this.getView().setModel(this.i18nModel, "i18n");  
+//  var sRootPath = jQuery.sap.getResourcePath("fault_mgmt");
+//  this.i18nModel = new sap.ui.model.resource.ResourceModel({
+//        bundleUrl : sRootPath+"/i18n/i18n.properties"
+//  });
+  var i18nModel = geti18nModel();
+  this.getView().setModel(i18nModel, "i18n");  
   //** Eric - End add - CR015
   
   getIconUsers(this);
@@ -4691,31 +4713,34 @@ End of fix by KONCHADS on 160616 for Defect # 11915
    eqpFMSFormChngdFlg = true;
   });
 //  End of fix by KONCHADS on 23/06/2016 for Defect # 11832
-  var view = this.getView();
-  if(data){
-   if($.trim(data.ZzfaultLoc).length > 0 && $.trim(data.ZzfaultLocDesc).length > 0)
-   {
-    view.data("location",data.ZzfaultLoc);
-    view.location.setValue(data.ZzfaultLocDesc);
-   }
-   if($.trim(data.ZzfaultSource).length > 0 && $.trim(data.ZzfaultSourceDesc).length > 0)
-   {
-    view.faultSource.setValue(data.ZzfaultSourceDesc);
-    view.faultSource.data("value",data.ZzfaultSource);
-
-    this.getValidateValues("faultSource");
-   }
-   //Begin of Insert KADAMA20161013 for Defect 33612
-   if($.trim(data.ZzrepPhase).length > 0 && $.trim(data.ZzrepPhaseDesc).length > 0)
-   {
-    view.reportPhase.setValue(data.ZzrepPhaseDesc);
-    view.reportPhase.data("value",data.ZzrepPhase);
-
-   }
-   //End of Insert KADAMA20161013 for Defect 33612
-
-  }
+// START DELETION CR015 SIMS20180815 (SY)   
+//  var view = this.getView();
+//  if(data){
+//   if($.trim(data.ZzfaultLoc).length > 0 && $.trim(data.ZzfaultLocDesc).length > 0)
+//   {
+//    view.data("location",data.ZzfaultLoc);
+//    view.location.setValue(data.ZzfaultLocDesc);
+//   }
+//   if($.trim(data.ZzfaultSource).length > 0 && $.trim(data.ZzfaultSourceDesc).length > 0)
+//   {
+//    view.faultSource.setValue(data.ZzfaultSourceDesc);
+//    view.faultSource.data("value",data.ZzfaultSource);
+//
+//    this.getValidateValues("faultSource");
+//   }
+//   //Begin of Insert KADAMA20161013 for Defect 33612
+//   if($.trim(data.ZzrepPhase).length > 0 && $.trim(data.ZzrepPhaseDesc).length > 0)
+//   {
+//    view.reportPhase.setValue(data.ZzrepPhaseDesc);
+//    view.reportPhase.data("value",data.ZzrepPhase);
+//
+//   }
+//   //End of Insert KADAMA20161013 for Defect 33612
+//
+//  }
+//END DELETION CR015 SIMS20180815 (SY) 
   
+  this.getValidateValues("faultSource"); //++ CR015 SIMS20180815 (SY)
   var controller = this;  //++ CR015 SIMS20180815 (SY)
   readUserLastEntry(controller.getUserLastEntry, controller); //++ CR015 SIMS20180815 (SY)
  },
@@ -5207,6 +5232,14 @@ End of fix by KONCHADS on 160616 for Defect # 11915
 						 view.location.setValue(data.d.results[i].Value);  //location desc
 					 }					  
 				 }
+				 if ( data.d.results[i].Key1 === "ZZFAULT_SOURCE" ) {
+					 if ( data.d.results[i].Key2 === "KEY" ) {
+						 view.faultSource.data("value",data.d.results[i].Value);  //fault source key
+					 }
+					 if ( data.d.results[i].Key2 === "DESCRIPTION" ) {
+						 view.faultSource.setValue(data.d.results[i].Value);  //fault source desc
+					 }					  
+				 }				 
 			 }
 		 }
 	 }
@@ -5258,6 +5291,23 @@ End of fix by KONCHADS on 160616 for Defect # 11915
 		oEntryItem.Value = this.getView().data().location;
 		oEntry.NAV_TO_LENTRY.push(oEntryItem);
 	}
+	
+	oEntryItem = {};
+	oEntryItem.ParameterName = "CREATE_FAULT";
+	oEntryItem.Key1 = "ZZFAULT_SOURCE";
+	oEntryItem.Key2 = "DESCRIPTION";
+	oEntryItem.Value = this.getView().faultSource.getValue();
+	oEntry.NAV_TO_LENTRY.push(oEntryItem);
+	
+	if (this.getView().faultSource.data().value) {
+		oEntryItem = {};
+		oEntryItem.ParameterName = "CREATE_FAULT";
+		oEntryItem.Key1 = "ZZFAULT_SOURCE";		
+		oEntryItem.Key2 = "KEY";
+		oEntryItem.Value = this.getView().faultSource.data().value;
+		oEntry.NAV_TO_LENTRY.push(oEntryItem);
+	}
+	
 	saveUserLastEntry(oEntry, this);
  },
 
@@ -5381,7 +5431,79 @@ End of fix by KONCHADS on 160616 for Defect # 11915
 	 };
 	 
 	 oEvent.getSource().getBinding("suggestionItems").filter(aFilters);	 
- }
+ },
+ 
+  processFromInput :function(data){
+	 
+	  var set = this.getView().setNum.getValue().toUpperCase();	  
+	  var sValidSet = data.d.results[0].NAV_SET.results.length;
+	  
+	  //check if car number has a token but is a valid set number
+
+	  
+	  if(set !== null && set !==""){
+		  
+		  if(sValidSet === 0){  //invalid set
+				 set = "";
+				 jQuery.sap.require("sap.m.MessageBox");
+				 sap.m.MessageBox.show(
+						 "Please provide valid Set Number", {
+					      icon: sap.m.MessageBox.Icon.ERROR,
+					      title: "ERROR",
+					      actions: [sap.m.MessageBox.Action.OK],
+					      onClose: function(oAction) { 
+					       if(oAction == "OK"){	
+					       } },
+					       styleClass: "faultMsgBox" 
+				    	   }
+				 )		  
+		  } else {
+				  
+				  if(this.getView().carInput.getTokens().length !== 0){  //car number has tokens 
+				  var setModelList = this.getView().getModel("setNumberModel").oData.list;
+				  
+				  var index = setModelList.map(function(obj){
+					  return obj.Zzsetid
+				  }).indexOf(set);
+				  
+				  if (index === -1){
+					 jQuery.sap.require("sap.m.MessageBox");
+					 sap.m.MessageBox.show(
+							 "Set Number does not match Car number. Please try again", {
+						      icon: sap.m.MessageBox.Icon.ERROR,
+						      title: "ERROR",
+						      actions: [sap.m.MessageBox.Action.OK],
+						      onClose: function(oAction) { 
+						       if(oAction == "OK"){	
+						       } },
+						       styleClass: "faultMsgBox" 
+					    	   }
+					 )	  
+				  }
+					  
+				  }  
+	      }
+	  }
+	  
+	  var oldSet = this.getView().data("setNumber");
+	  
+	  this.getView().setNum.setValue(set);
+	  this.getView().data("setNumber",set);
+	  getCarAndSetList(set, "", this.initCarAndSet, this);
+	  if (oldSet!=="" && oldSet !==null) {
+		  if(set !== oldSet){
+			  this.getView().data("carNumbers",[]);
+			  this.getView().data("carNumbersLen","0");
+			  this.getView().carInput.destroyTokens();
+			  this.getView().symptom.destroyTokens();
+			  this.getView().asset.destroyTokens();	
+			  if((this.getView().data("notifNum"))!==""&&(this.getView().data("notifNum"))!==null){
+				  this.getView().positionPopOver.setValue(""); 
+			  }
+	   }
+		  this.clearActivityCode();
+	  }
+  },
  
 //END INSERT CR015 SIMS20180815 (SY) 
  //EOI For Fault UI Fix KADAMA20170109 #HPQC 39201

@@ -17,7 +17,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzqmnum}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzqmnum" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -36,7 +36,7 @@
 
                                  <m:VBox width="70%" direction="Car">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/ZztripNum}" width="100%" placeholder="{i18n>Search}"
                                                      id="ZztripNum" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -55,7 +55,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/ZzincdailyNum}" width="100%" placeholder="{i18n>Search}"
                                                      id="ZzincdailyNum" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -74,7 +74,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/ZzsetNum}" width="100%" placeholder="{i18n>Search}"
                                                      id="ZzsetNum" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -93,7 +93,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzcarid}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzcarid" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -112,7 +112,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzeqktx}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzeqktx" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -131,33 +131,12 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzposition}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzposition" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
                           </m:items>
                    </m:HBox>
-                   
-                   <!--  
-                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPositionDesc">
-                          <m:items>
-                                 <m:VBox width="35%" direction="Column" alignItems="End"
-                                       alignContent="Center" class="sapUiSmallMarginEnd">
-                                       <m:items>
-                                              <m:Label text="{i18n>ZzpositionDesc}" width="100%"
-                                                     textAlign="Right" />
-                                       </m:items>
-                                 </m:VBox>
-
-                                 <m:VBox width="70%" direction="Column">
-                                       <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
-                                                     id="ZzpositionDesc" liveChange="onLiveSearch" showSearchButton="false"/>
-                                       </m:items>
-                                 </m:VBox>
-                          </m:items>
-                   </m:HBox>
-                   -->
                    
                    <m:HBox width="100%" alignItems="Center" id="IDHBoxSymptomCode">
                           <m:items>
@@ -171,33 +150,12 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzktxtcd}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzktxtcd" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
                           </m:items>
                    </m:HBox>
-                   
-                   <!--  
-                   <m:HBox width="100%" alignItems="Center" id="IDHBoxSymptomDesc">
-                          <m:items>
-                                 <m:VBox width="35%" direction="Column" alignItems="End"
-                                       alignContent="Center" class="sapUiSmallMarginEnd">
-                                       <m:items>
-                                              <m:Label text="{i18n>Zzktxtgr}" width="100%"
-                                                     textAlign="Right" />
-                                       </m:items>
-                                 </m:VBox>
-
-                                 <m:VBox width="70%" direction="Column">
-                                       <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
-                                                     id="Zzktxtgr" liveChange="onLiveSearch" showSearchButton="false"/>
-                                       </m:items>
-                                 </m:VBox>
-                          </m:items>
-                   </m:HBox>
-                   -->
                    
                    <m:HBox width="100%" alignItems="Center" id="IDHBoxPriorityCode">
                           <m:items>
@@ -211,33 +169,12 @@
 
                                  <m:VBox width="70%" direction="Car">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzpriok}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzpriok" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
                           </m:items>
                    </m:HBox>
-                   
-                   <!--  
-                   <m:HBox width="100%" alignItems="Center" id="IDHBoxPriorityDesc">
-                          <m:items>
-                                 <m:VBox width="35%" direction="Column" alignItems="End"
-                                       alignContent="Center" class="sapUiSmallMarginEnd">
-                                       <m:items>
-                                              <m:Label text="{i18n>ZzpriorityDesc}" width="100%"
-                                                     textAlign="Right" />
-                                       </m:items>
-                                 </m:VBox>
-
-                                 <m:VBox width="70%" direction="Car">
-                                       <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
-                                                     id="ZzpriorityDesc" liveChange="onLiveSearch" showSearchButton="false"/>
-                                       </m:items>
-                                 </m:VBox>
-                          </m:items>
-                   </m:HBox>
-                   -->
                    
                    <m:HBox width="100%" alignItems="Center" id="IDHBoxPimaryFaultNumber">
                           <m:items>
@@ -251,7 +188,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/ZzprimeFauktNum}" width="100%" placeholder="{i18n>Search}"
                                                      id="ZzprimeFauktNum" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>
@@ -270,7 +207,7 @@
 
                                  <m:VBox width="70%" direction="Column">
                                        <m:items>
-                                              <m:SearchField width="100%" placeholder="{i18n>Search}"
+                                              <m:SearchField value="{FilterModel>/Zzaufnr}" width="100%" placeholder="{i18n>Search}"
                                                      id="Zzaufnr" liveChange="onLiveSearch" showSearchButton="false"/>
                                        </m:items>
                                  </m:VBox>

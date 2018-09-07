@@ -1820,7 +1820,93 @@ function  getTechDetailGrp(asset,car,catalog,callback, callbackObject){
 				oModal.busyIndicator.close();
 			}
 		});
-	}
+	};
+	
+	function getFilterModel() {
+		var oFilterModel = new sap.ui.model.json.JSONModel;
+		var oData = {
+				"Zzqmnum": "",
+				 "ZztripNum": "",
+				 "ZzincdailyNum": "",
+				 "ZzsetNum": "",
+				 "Zzcarid": "",
+				 "Zzeqktx": "",
+				 "Zzposition": "",
+				 "Zzktxtcd": "",
+				 "Zzpriok": "",
+				 "ZzprimeFauktNum": "",
+				 "Zzaufnr": ""
+		};
+		oFilterModel.setData(oData);
+		return oFilterModel;
+	};
+	
+	function getSortableColumns() {
+		/* Use these fields to build the sort dialog 
+		 * Maintain the actualy table field name here */
+		 return [
+			 "Zzqmnum",
+			 "Zzqmdat",
+			 "Zzmzeit",
+			 "ZztripNum",
+			 "ZzincdailyNum",
+			 "ZzincidentDate",
+			 "ZzincidentTime",
+			 "ZzsetNum",
+			 "Zzcarid",
+			 "Zzeqktx",
+			 "Zzposition",
+			 "ZzpositionDesc",
+			 "Zzktxtcd",
+			 "Zzktxtgr",
+			 "Zzpriok",
+			 "ZzpriorityDesc",
+			 "ZzprimeFauktNum",
+			 "Zzaufnr"
+		 ];
+	 };
+	 
+	 function geti18nModel(){
+		 if(!this.i18nModel){
+			 var sRootPath = jQuery.sap.getResourcePath("fault_mgmt");
+			 
+			 this.i18nModel = new sap.ui.model.resource.ResourceModel({
+			        bundleUrl : sRootPath+"/i18n/i18n.properties"
+			  });
+		 }
+		 
+		 return this.i18nModel;
+	 };
+	 
+	 function getSortModel() {
+//	     var oSortModel = this.oSortModel
+//	     if (oSortModel) {
+//	    	 oSortModel.refresh();
+//	     } else {
+//	         //Model for Popover fragment for sort items
+//	    	 oSortModel = new sap.ui.model.json.JSONModel();
+//	     };
+	     
+		 var oSortModel = new sap.ui.model.json.JSONModel();
+	     var aData = {};
+	     aData.items = [];
+
+	     var aSortableColumns = this.getSortableColumns();
+	     
+	     var i18nModel = this.geti18nModel();
+	     var oResourceBundle = i18nModel.getResourceBundle();
+	     for (var i = 0; i < aSortableColumns.length; i++) {
+	    	 var oVal = {};
+	    	 
+	    	 oVal.key = aSortableColumns[i];
+	    	 oVal.text = oResourceBundle.getText(aSortableColumns[i]);
+	    	 
+	    	 aData.items.push(oVal);
+		}
+	     
+	     oSortModel.setData(aData);
+	     return oSortModel;
+	 };
 //** Eric - End add - CR015
 	
 //BEGIN INSERT CR015 SIMS20180815 (SY)
